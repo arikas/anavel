@@ -1,0 +1,46 @@
+JvmtiExport can_access_local_variables 0
+JvmtiExport can_hotswap_or_post_breakpoint 0
+JvmtiExport can_post_on_exceptions 0
+# 194 ciObject found
+ciMethod java/lang/Object <init> ()V 4097 1 259115 0 0
+ciMethod java/lang/Object getClass ()Ljava/lang/Class; 2049 1 256 0 -1
+ciMethod java/lang/Object hashCode ()I 2049 1 256 0 -1
+ciMethod java/lang/Object equals (Ljava/lang/Object;)Z 4097 1 5632 0 64
+ciMethod java/lang/System arraycopy (Ljava/lang/Object;ILjava/lang/Object;II)V 5121 1 640 0 -1
+ciMethod java/util/AbstractList <init> ()V 425 1 42106 0 0
+ciMethod java/util/AbstractCollection <init> ()V 265 1 49308 0 0
+ciMethod java/lang/Math max (II)I 217 1 20942 0 -1
+ciMethod java/util/AbstractSet <init> ()V 49 1 6951 0 0
+ciMethod java/util/AbstractMap <init> ()V 337 1 12169 0 0
+ciMethod java/util/ArrayList <init> ()V 145 1 20419 0 64
+ciMethod java/util/ArrayList ensureCapacityInternal (I)V 641 1 81351 0 576
+ciMethod java/util/ArrayList ensureExplicitCapacity (I)V 18681 1 82716 0 544
+ciMethod java/util/ArrayList grow (I)V 89 1 12922 0 544
+ciMethod java/util/ArrayList hugeCapacity (I)I 0 0 1 0 0
+ciMethod java/util/ArrayList size ()I 1097 1 137 0 0
+ciMethod java/util/ArrayList isEmpty ()Z 3177 1 32537 0 64
+ciMethod java/util/ArrayList elementData (I)Ljava/lang/Object; 2081 1 387837 0 0
+ciMethod java/util/ArrayList get (I)Ljava/lang/Object; 2081 1 379298 0 128
+ciMethod java/util/ArrayList add (Ljava/lang/Object;)Z 641 1 80298 0 736
+ciMethod java/util/ArrayList remove (I)Ljava/lang/Object; 2049 1 6400 0 352
+ciMethod java/util/ArrayList rangeCheck (I)V 2081 1 387151 0 64
+ciMethod java/util/HashMap hash (Ljava/lang/Object;)I 2169 1 39236 0 0
+ciMethod java/util/HashMap <init> ()V 129 1 11681 0 0
+ciMethod java/util/HashMap put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; 2049 1 13867 0 0
+ciMethod java/util/HashMap putVal (ILjava/lang/Object;Ljava/lang/Object;ZZ)Ljava/lang/Object; 2049 249 13011 0 1920
+ciMethod java/util/HashMap resize ()[Ljava/util/HashMap$Node; 153 2481 2006 0 -1
+ciMethod java/util/HashMap treeifyBin ([Ljava/util/HashMap$Node;I)V 0 0 1 0 0
+ciMethod java/util/HashMap newNode (ILjava/lang/Object;Ljava/lang/Object;Ljava/util/HashMap$Node;)Ljava/util/HashMap$Node; 2049 1 9267 0 224
+ciMethod java/util/HashMap replacementTreeNode (Ljava/util/HashMap$Node;Ljava/util/HashMap$Node;)Ljava/util/HashMap$TreeNode; 0 0 1 0 -1
+ciMethod java/util/HashMap afterNodeAccess (Ljava/util/HashMap$Node;)V 4097 1 2229 0 0
+ciMethod java/util/HashMap afterNodeInsertion (Z)V 2049 1 1604 0 0
+ciMethod java/util/HashMap$Node <init> (ILjava/lang/Object;Ljava/lang/Object;Ljava/util/HashMap$Node;)V 2081 1 9285 0 0
+ciMethod java/util/Arrays copyOf ([Ljava/lang/Object;I)[Ljava/lang/Object; 4097 1 24899 0 0
+ciMethod java/util/Arrays copyOf ([Ljava/lang/Object;ILjava/lang/Class;)[Ljava/lang/Object; 4097 1 5632 0 -1
+ciMethodData java/lang/Object <init> ()V 2 259115 orig 264 184 158 122 91 0 0 0 0 136 4 107 5 0 0 0 0 32 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 89 145 31 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 3 0 3 0 0 0 0 0 0 0 255 255 255 255 0 0 0 0 0 0 0 0 data 0 oops 0
+ciMethod java/util/HashMap$TreeNode treeify ([Ljava/util/HashMap$Node;)V 0 0 1 0 -1
+ciMethod java/util/HashMap$TreeNode putTreeVal (Ljava/util/HashMap;[Ljava/util/HashMap$Node;ILjava/lang/Object;Ljava/lang/Object;)Ljava/util/HashMap$TreeNode; 0 0 1 0 -1
+ciMethod java/util/HashMap$TreeNode split (Ljava/util/HashMap;[Ljava/util/HashMap$Node;II)V 0 0 1 0 -1
+ciMethod java/util/HashSet <init> ()V 17 1 6737 0 0
+ciMethod java/util/HashSet add (Ljava/lang/Object;)Z 4097 1 10004 0 0
+ciMethodData java/util/HashMap hash (Ljava/lang/Object;)I 2 39236 orig 264 184 158 122 91 0 0 0 0 184 127 121 5 0 0 0 0 176 1 0 0 32 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14 1 0 0 169 193 4 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 6 0 3 0 1 0 104 0 0 0 255 255 255 255 7 0 1 0 0 0 0 0 data 13 0x10007 0x9837 0x38 0x0 0x50003 0x0 0x48 0x90005 0x5c61 0x29566d0 0x14c4 0x8540120 0x1e1 oops 2

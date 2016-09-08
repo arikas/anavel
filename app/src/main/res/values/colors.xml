@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="defaultcolorUpper">#b0e0e6</color>
+    <color name="defaultcolorActionBar">#1e90ff</color>
+    <color name="defaultcolorBackground">#1e90ff</color>
+    <color name="colorAccent">#f0ffff</color>
+
+    <color name="title_color">#000</color>
+    <color name="status_color">#808080</color>>
+    <color name="edit_profile">#5F76BF</color>
+    <color name="bottom_black_bgcolor">#90000000</color>
+</resources>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChangeUserDataActivity"
+    android:background="#fff"
+    android:id ="@+id/activity_changeuserdata"
+    android:configChanges="orientation"
+    android:screenOrientation="portrait">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/changeUDCreateTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EDIT PROFILE"
+            android:textColor="@color/title_color"
+            android:layout_marginTop="10dp"
+            android:textSize="23dp"
+            android:layout_centerHorizontal="true" />
+
+
+        <Button
+            android:id="@+id/changeUDSubmitButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update"
+            android:textColor="@color/edit_profile"
+            android:textSize="19dp"
+            android:layout_below="@+id/changeUDField"
+            android:padding="16dp"
+            android:gravity="center"
+            android:background="@drawable/buttondash"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="40dp"/>
+
+
+        <LinearLayout
+            android:id="@+id/changeUDField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="-70dp">
+
+            <EditText
+                android:id="@+id/changeUDAboutEdittext"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:background="@drawable/edittextdash"
+                android:layout_marginTop="140dp"
+                android:textColor="@color/edit_profile"
+                android:textColorHint="@color/edit_profile"
+                android:paddingLeft="20dp"
+                android:drawableLeft="@drawable/businessman"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:drawablePadding="16dp"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines ="4"
+                android:maxLength ="2000"
+                android:scrollHorizontally="false"
+                >
+            </EditText>
+
+            <EditText
+                android:id="@+id/changeUDStatusEdittext"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:background="@drawable/edittextdash"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/edit_profile"
+                android:textColorHint="@color/edit_profile"
+                android:paddingLeft="20dp"
+                android:drawableLeft="@drawable/speechbubble"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:drawablePadding="16dp"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines ="4"
+                android:maxLength ="2000"
+                android:scrollHorizontally="false">
+            </EditText>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
