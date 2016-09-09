@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity
         login_Login_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatabaseHelper.getInstance(login_Context).removeAll();
                 username = login_Username_EditText.getText().toString().trim();
                 password = login_Password_EditText.getText().toString().trim();
 
@@ -275,7 +276,7 @@ public class LoginActivity extends AppCompatActivity
         ImageRequest imageRequest = new ImageRequest(imageLink, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
-                DatabaseHelper.getInstance(login_Context).addEntry(response, username, imageIndex);
+                DatabaseHelper.getInstance(login_Context).addEntry(response, username, imageIndex, imageLink);
                 imageRequestPending--;
                 if(imageRequestPending==0) {
                     getFollow(server_Url3, loading);

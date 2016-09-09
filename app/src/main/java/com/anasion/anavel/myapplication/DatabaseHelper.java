@@ -29,12 +29,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String COLUMN_USERNAME = "username";
     public static final String COLUMN_IMAGE = "image";
     public static final String COLUMN_INDEX = "indeks";
+    public static final String COLUMN_IMAGELINK = "image_link";
     public static final String COLUMN_FOLLOWING = "following";
 
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("+
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_USERNAME + " TEXT," +
             COLUMN_INDEX + " INTEGER," +
+            COLUMN_IMAGELINK + " TEXT," +
             COLUMN_IMAGE + " TEXT);";
 
     private static final String CREATE_TABLE_FOLLOW = "CREATE TABLE " + TABLE_FOLLOW + "("+
@@ -70,21 +72,23 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    public void addEntry(Bitmap image, String username) throws SQLiteException {
+    public void addEntry(Bitmap image, String username, String imagelink) throws SQLiteException {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues cv = new  ContentValues();
         cv.put(COLUMN_USERNAME, username);
         cv.put(COLUMN_INDEX, getMaxIndex()+1);
+        cv.put(COLUMN_IMAGELINK, imagelink);
         cv.put(COLUMN_IMAGE, encodeTobase64(image));
 
         database.insert( TABLE_NAME, null, cv );
     }
 
-    public void addEntry(Bitmap image, String username, Integer index) throws SQLiteException {
+    public void addEntry(Bitmap image, String username, Integer index, String imagelink) throws SQLiteException {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues cv = new  ContentValues();
         cv.put(COLUMN_USERNAME, username);
         cv.put(COLUMN_INDEX, index);
+        cv.put(COLUMN_IMAGELINK, imagelink);
         cv.put(COLUMN_IMAGE, encodeTobase64(image));
 
         database.insert( TABLE_NAME, null, cv );
@@ -98,6 +102,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cv.put(COLUMN_FOLLOWING, following);
 
         database.insert( TABLE_FOLLOW, null, cv );
+    }
+
+    public void deleteEntry(String imageLink)
+    {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(TABLE_NAME, " image_link ='" +imageLink+ "'", null);
+    }
+
+    public void deleteFollowEntry(String username, String following)
+    {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(TABLE_FOLLOW, " username ='" +username+ "' and following ='" +following+ "'", null);
     }
 
     public int getFollowingCount(String username)
@@ -138,18 +154,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
         database.close();
     }
 
-    public List<Bitmap> getEntry(String username){
-        List<Bitmap> imageList = new ArrayList<Bitmap>();
+    public List<Beanclass> getEntry(String username){
+        List<Beanclass> imageList = new ArrayList<Beanclass>();
         SQLiteDatabase database = this.getReadableDatabase();
-        String sql = "SELECT image FROM "+ TABLE_NAME + " WHERE username='"+username+"' ORDER BY indeks ASC;";
+        String sql = "SELECT image,image_link FROM "+ TABLE_NAME + " WHERE username='"+username+"' ORDER BY indeks ASC;";
         Cursor cursor = database.rawQuery(sql, null);
         if(cursor != null) {
             if (cursor.moveToFirst()) {
                 while (cursor.isAfterLast() == false) {
                     String name = cursor.getString(cursor
                             .getColumnIndex(COLUMN_IMAGE));
-
-                    imageList.add(decodeBase64(name));
+                    String url = cursor.getString(cursor
+                            .getColumnIndex(COLUMN_IMAGELINK));
+                    Beanclass bean = new Beanclass(decodeBase64(name),url);
+                    imageList.add(bean);
                     cursor.moveToNext();
                 }
             }

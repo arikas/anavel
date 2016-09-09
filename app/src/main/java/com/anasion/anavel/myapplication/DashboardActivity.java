@@ -37,12 +37,16 @@ public class DashboardActivity extends AppCompatActivity {
     protected ExpandableHeightGridView gridView = null;
     protected ScrollView dashboard_Scroller = null;
     protected ImageView dashboard_Upload = null;
+    protected ImageView dashboard_Home = null;
+    protected ImageView dashboard_Account = null;
+    protected ImageView dashboard_Fav = null;
+    protected ImageView dashboard_Search = null;
 
     ExpandableHeightGridView gridview;
 
     private ArrayList<Beanclass> beans;
     private GridviewAdapter gridviewAdapter;
-    private List<Bitmap> imageCollection = new ArrayList<Bitmap>();
+    private List<Beanclass> imageCollection = new ArrayList<Beanclass>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,10 @@ public class DashboardActivity extends AppCompatActivity {
         dashboard_Following_Textview = (TextView) findViewById(R.id.dashboardFollowingTextview);
         dashboard_Scroller = (ScrollView) findViewById(R.id.dashboardScroller);
         dashboard_Upload = (ImageView) findViewById(R.id.dashboardUpload);
+        dashboard_Home = (ImageView) findViewById(R.id.dashboardHome);
+        dashboard_Account = (ImageView) findViewById(R.id.dashboardAccount);
+        dashboard_Fav = (ImageView) findViewById(R.id.dashboardFav);
+        dashboard_Search = (ImageView) findViewById(R.id.dashboardSearch);
         gridview = (ExpandableHeightGridView) findViewById(R.id.gridview);
 
         dashboard_Post_Textview.setText(String.valueOf(DatabaseHelper.getInstance(dashboard_Context).getPostCount(SessionManager.getInstance(dashboard_Context).getDetail().get(SessionManager.KEY_username))));
@@ -120,11 +128,39 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
+        dashboard_Home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        dashboard_Account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         dashboard_Upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), UploadImageActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        dashboard_Fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        dashboard_Search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
@@ -150,9 +186,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         for (int i= 0; i< imageCollection.size(); i++) {
 
-            Beanclass beanclass = new com.anasion.anavel.myapplication.Beanclass(imageCollection.get(i));
-            beans.add(beanclass);
-
+            beans.add(imageCollection.get(i));
         }
         gridviewAdapter = new com.anasion.anavel.myapplication.GridviewAdapter(DashboardActivity.this, beans);
         gridview.setExpanded(true);

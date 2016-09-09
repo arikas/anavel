@@ -31,6 +31,7 @@ public class SessionManager
     public static final String KEY_profilImage = "profilimage";
     public static final String KEY_coverimage = "coverimage";
     public static final String KEY_clickImaage = "clickImage";
+    public static final String KEY_pathClick = "pathClick";
 
     private SessionManager(Context context)
     {
@@ -86,6 +87,17 @@ public class SessionManager
     public static Bitmap getClickImage()
     {
         return decodeBase64(sharedPreferences.getString(KEY_clickImaage, null));
+    }
+
+    public static synchronized void saveClickUrl(String url)
+    {
+        editor.putString(KEY_pathClick, url);
+        editor.commit();
+    }
+
+    public static String getClickUrl()
+    {
+        return sharedPreferences.getString(KEY_pathClick, null);
     }
 
     public static HashMap<String, Bitmap> getImage()

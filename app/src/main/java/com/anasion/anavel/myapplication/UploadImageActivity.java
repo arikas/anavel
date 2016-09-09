@@ -188,7 +188,7 @@ public class UploadImageActivity extends AppCompatActivity {
                             JSONArray jsonArray = new JSONArray(s);
                             JSONObject jsonObject = jsonArray.getJSONObject(0);
                             final String message = jsonObject.getString("message");
-                            String upload_Url = jsonObject.getString("actualpath");
+                            final String upload_Url = jsonObject.getString("actualpath");
                             final String username = jsonObject.getString("username");
 
                             if(message.equals("Successfully Uploaded")) {
@@ -196,7 +196,7 @@ public class UploadImageActivity extends AppCompatActivity {
                                 imageRequest = new ImageRequest(upload_Url, new Response.Listener<Bitmap>() {
                                     @Override
                                     public void onResponse(Bitmap response) {
-                                        DatabaseHelper.getInstance(upload_Context).addEntry(response,username);
+                                        DatabaseHelper.getInstance(upload_Context).addEntry(response,username,upload_Url);
 
                                         Toast.makeText(UploadImageActivity.this, message , Toast.LENGTH_LONG).show();
 

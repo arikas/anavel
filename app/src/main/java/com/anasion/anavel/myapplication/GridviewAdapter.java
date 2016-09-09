@@ -77,6 +77,7 @@ public class GridviewAdapter extends BaseAdapter
             @Override
             public void onClick(View v) {
                 SessionManager.getInstance(context).saveClickImage(beans.getImage());
+                SessionManager.getInstance(context).saveClickUrl(beans.getUrl());
 
                 Intent intent = new Intent(context, ShowImageActivity.class);
                 context.startActivity(intent);

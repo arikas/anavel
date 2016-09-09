@@ -7,9 +7,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_marginTop="100dp"
-            android:layout_marginBottom="150dp"
+        <FrameLayout
+            android:layout_marginBottom="50dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
@@ -17,8 +16,40 @@
             <ImageView
                 android:id="@+id/showImageview"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
-        </LinearLayout>
+                android:layout_height="fill_parent">
+
+            </ImageView>
+
+
+            <LinearLayout
+                android:id="@+id/optionImageview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#82000000"
+                android:gravity="center"
+                >
+                <Button
+                    android:id="@+id/showImageDeleteButton"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:scaleType="fitXY"
+                    android:background="@drawable/buttondeleteimage"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    />
+                <Button
+                    android:id="@+id/showImageLikeButton"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:scaleType="fitXY"
+                    android:background="@drawable/buttonlikeimage"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    />
+            </LinearLayout>
+        </FrameLayout>
+
+
     </FrameLayout>
 
     <LinearLayout
