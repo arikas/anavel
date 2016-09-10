@@ -160,7 +160,8 @@ public class DashboardActivity extends AppCompatActivity {
         dashboard_Search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+                startActivity(intent);
             }
         });
 

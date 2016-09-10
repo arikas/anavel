@@ -97,10 +97,11 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/dashboardHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/ic_favorite" />
+                android:background="@drawable/bottommenuhome" />
         </LinearLayout>
 
 
@@ -110,11 +111,11 @@
             android:layout_weight="1">
 
             <ImageView
-
+                android:id="@+id/dashboardAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/user" />
+                android:background="@drawable/bottommenuaccount" />
         </LinearLayout>
 
         <LinearLayout
@@ -124,10 +125,11 @@
 
 
             <ImageView
-
+                android:id="@+id/dashboardUpload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_icon"/>
+                android:background="@drawable/bottommenupost"
+                android:clickable="true"/>
         </LinearLayout>
 
         <LinearLayout
@@ -137,10 +139,10 @@
 
 
             <ImageView
-
+                android:id="@+id/dashboardFav"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_photo" />
+                android:background="@drawable/bottommenufav" />
 
         </LinearLayout>
 
@@ -151,7 +153,7 @@
             android:layout_weight="1">
 
             <ImageView
-
+                android:id="@+id/dashboardSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/abc_ic_search_api_mtrl_alpha" />

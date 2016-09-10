@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,21 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SplashActivity extends AppCompatActivity
 {
@@ -103,7 +89,7 @@ public class SplashActivity extends AppCompatActivity
         if(CheckConnection.getInstance(splash_Context).isConnect()) {
             if (SessionManager.getInstance(splash_Context).checkLogin()) {
                 splash_Progress_Text_View.setText("Checking Session...");
-                splash_Progress_Bar.setProgress(25);
+                splash_Progress_Bar.setProgress(50);
                 loginInBackground(SessionManager.getInstance(splash_Context).getDetail().get(SessionManager.KEY_username), SessionManager.getInstance(splash_Context).getDetail().get(SessionManager.KEY_password));
             } else {
                 splash_Progress_Text_View.setText("Redirecting...");
@@ -141,101 +127,13 @@ public class SplashActivity extends AppCompatActivity
 
     private void  loginInBackground(final String username, final String password)
     {
-        string_Request = new StringRequest(Request.Method.POST, server_Url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String s) {
-                try {
-                    JSONArray jsonArray = new JSONArray(s);
-                    JSONObject jsonObject = jsonArray.getJSONObject(0);
-                    String message = jsonObject.getString("message");
-                    String pp_Url = jsonObject.getString("pp");
-                    String cp_Url = jsonObject.getString("cp");
-                    String status = jsonObject.getString("status");
-                    String about = jsonObject.getString("about");
-                    String name = jsonObject.getString("name");
+        splash_Progress_Text_View.setText("Redirecting...");
+        splash_Progress_Bar.setProgress(100);
 
-                    if(pp_Url != null && cp_Url != null)
-                    {
-                        splash_Progress_Text_View.setText("Checking Account...");
-                        splash_Progress_Bar.setProgress(50);
-                    }
-
-                    getImageInBackground(pp_Url, "pp", message);
-                    getImageInBackground(cp_Url, "cp", message);
-
-                    SessionManager.getInstance(splash_Context).createLoginSession(username, password, status, about, name);
-
-                }
-                catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Toast.makeText(splash_Context, volleyError.toString(), Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        })
-        {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put(KEY_Username, username);
-                params.put(KEY_Password, password);
-
-                return params;
-            }
-        };
-
-        CustomRequest.deleteInstance();
-        CustomRequest.getInstance(splash_Context).addToRequestQueue(string_Request);
+        //Toast.makeText(splash_Context, message, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+        startActivity(intent);
+        finish();
     }
-
-    private void getImageInBackground(final String imageLink, final String request, final String message)
-    {
-        ImageRequest imageRequest = new ImageRequest(imageLink, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                if(request.equals("pp"))
-                {
-                    SessionManager.getInstance(splash_Context).saveProfilImage(response);
-
-                    splash_Progress_Text_View.setText("Get Account Data...");
-                    splash_Progress_Bar.setProgress(75);
-                }
-                else
-                {
-                    SessionManager.getInstance(splash_Context).saveCoverImage(response);
-
-                    splash_Progress_Text_View.setText("Redirecting...");
-                    splash_Progress_Bar.setProgress(100);
-
-                    //Toast.makeText(splash_Context, message, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        }, 0, 0, null, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(SplashActivity.this, "Error get user data.." , Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        CustomRequest.deleteInstance();
-        CustomRequest.getInstance(splash_Context).addToRequestQueue(imageRequest);
-    }
-
 
 }

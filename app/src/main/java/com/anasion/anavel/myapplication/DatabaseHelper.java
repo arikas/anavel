@@ -7,11 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cv.put(COLUMN_USERNAME, username);
         cv.put(COLUMN_INDEX, getMaxIndex()+1);
         cv.put(COLUMN_IMAGELINK, imagelink);
-        cv.put(COLUMN_IMAGE, encodeTobase64(image));
+        cv.put(COLUMN_IMAGE, ImageProcess.getInstance().encodeTobase64(image));
 
         database.insert( TABLE_NAME, null, cv );
     }
@@ -89,7 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cv.put(COLUMN_USERNAME, username);
         cv.put(COLUMN_INDEX, index);
         cv.put(COLUMN_IMAGELINK, imagelink);
-        cv.put(COLUMN_IMAGE, encodeTobase64(image));
+        cv.put(COLUMN_IMAGE, ImageProcess.getInstance().encodeTobase64(image));
 
         database.insert( TABLE_NAME, null, cv );
     }
@@ -166,8 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                             .getColumnIndex(COLUMN_IMAGE));
                     String url = cursor.getString(cursor
                             .getColumnIndex(COLUMN_IMAGELINK));
-                    Beanclass bean = new Beanclass(decodeBase64(name),url);
-                    imageList.add(bean);
+                    imageList.add(new Beanclass(ImageProcess.getInstance().decodeBase64(name),url));
                     cursor.moveToNext();
                 }
             }
@@ -190,21 +185,4 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return indeks;
     }
 
-    public static String encodeTobase64(Bitmap image) {
-        Bitmap immage = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-
-        Log.d("Image Log:", imageEncoded);
-        return imageEncoded;
-    }
-
-    // method for base64 to bitmap
-    public static Bitmap decodeBase64(String input) {
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory
-                .decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
 }

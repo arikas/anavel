@@ -3,11 +3,7 @@ package com.anasion.anavel.myapplication;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 
 /**
@@ -68,25 +64,25 @@ public class SessionManager
 
     public static synchronized void saveProfilImage(Bitmap bitmap)
     {
-        editor.putString(KEY_profilImage, encodeTobase64(bitmap));
+        editor.putString(KEY_profilImage, ImageProcess.getInstance().encodeTobase64(bitmap));
         editor.commit();
     }
 
     public static synchronized void saveCoverImage(Bitmap bitmap)
     {
-        editor.putString(KEY_coverimage, encodeTobase64(bitmap));
+        editor.putString(KEY_coverimage, ImageProcess.getInstance().encodeTobase64(bitmap));
         editor.commit();
     }
 
     public static synchronized void saveClickImage(Bitmap bitmap)
     {
-        editor.putString(KEY_clickImaage, encodeTobase64(bitmap));
+        editor.putString(KEY_clickImaage, ImageProcess.getInstance().encodeTobase64(bitmap));
         editor.commit();
     }
 
     public static Bitmap getClickImage()
     {
-        return decodeBase64(sharedPreferences.getString(KEY_clickImaage, null));
+        return ImageProcess.getInstance().decodeBase64(sharedPreferences.getString(KEY_clickImaage, null));
     }
 
     public static synchronized void saveClickUrl(String url)
@@ -103,8 +99,8 @@ public class SessionManager
     public static HashMap<String, Bitmap> getImage()
     {
         HashMap<String, Bitmap> userImage = new HashMap<String, Bitmap>();
-        userImage.put(KEY_profilImage, decodeBase64(sharedPreferences.getString(KEY_profilImage, null)) );
-        userImage.put(KEY_coverimage, decodeBase64(sharedPreferences.getString(KEY_coverimage, null))  );
+        userImage.put(KEY_profilImage, ImageProcess.getInstance().decodeBase64(sharedPreferences.getString(KEY_profilImage, null)) );
+        userImage.put(KEY_coverimage, ImageProcess.getInstance().decodeBase64(sharedPreferences.getString(KEY_coverimage, null))  );
 
         return userImage;
     }
@@ -132,22 +128,4 @@ public class SessionManager
         editor.commit();
     }
 
-
-    public static String encodeTobase64(Bitmap image) {
-        Bitmap immage = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-
-        Log.d("Image Log:", imageEncoded);
-        return imageEncoded;
-    }
-
-    // method for base64 to bitmap
-    public static Bitmap decodeBase64(String input) {
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory
-                .decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
 }
