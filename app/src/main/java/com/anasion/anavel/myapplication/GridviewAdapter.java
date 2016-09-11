@@ -24,11 +24,13 @@ import java.util.ArrayList;
 public class GridviewAdapter extends BaseAdapter
 {
     Context context;
+    String classContext;
     ArrayList<Beanclass> beans;
 
-    public GridviewAdapter(Context context, ArrayList<Beanclass> beans) {
+    public GridviewAdapter(Context context, ArrayList<Beanclass> beans, String classContext) {
         this.beans = beans;
         this.context = context;
+        this.classContext = classContext;
     }
 
     @Override
@@ -79,8 +81,13 @@ public class GridviewAdapter extends BaseAdapter
                 SessionManager.getInstance(context).saveClickImage(beans.getImage());
                 SessionManager.getInstance(context).saveClickUrl(beans.getUrl());
 
-                Intent intent = new Intent(context, ShowImageActivity.class);
-                context.startActivity(intent);
+                if(classContext=="dashboard") {
+                    Intent intent = new Intent(context, ShowImageActivity.class);
+                    context.startActivity(intent);
+                }
+                else if(classContext=="searchDashboard") {
+
+                }
             }
         });
 

@@ -50,7 +50,8 @@
         <activity android:name=".ChangeUserDataActivity" />
         <activity android:name=".UploadImageActivity" />
         <activity android:name=".ShowImageActivity" />
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".SearchDashboardActivity"></activity>
     </application>
 
 </manifest>

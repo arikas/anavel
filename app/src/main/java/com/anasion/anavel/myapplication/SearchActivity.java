@@ -3,6 +3,8 @@ package com.anasion.anavel.myapplication;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -59,6 +61,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         search_Context = this;
 
@@ -84,6 +87,14 @@ public class SearchActivity extends AppCompatActivity {
                 SearchData.getInstance(search_Context).clearSearch();
                 username = search_EditText.getText().toString().trim();
                 searchFunction(username);
+            }
+        });
+
+        result_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SearchDashboardActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -218,16 +229,11 @@ public class SearchActivity extends AppCompatActivity {
         userProcess--;
         if(userProcess==0)
         {
+            resetResult();
             SearchData.getInstance(search_Context).createData(username,name,status,about,following,follower,post,profil,cover);
             showResult("Found");
             Toast.makeText(search_Context, "User Found", Toast.LENGTH_SHORT).show();
             loading.dismiss();
-
-            /*loading.setMessage("Redirecting...");
-            Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-            startActivity(intent);
-            finish();
-            */
         }
     }
 
@@ -329,14 +335,13 @@ public class SearchActivity extends AppCompatActivity {
                     for (Integer i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String image = jsonObject.getString("image");
+                        System.out.print(image);
                         userimageImage(username,i,image);
                     }
                 }
                 catch (JSONException e)
                 {
-                    resetResult();
-                    showResult("Error");
-                    loading.dismiss();
+                    responseAllData();
                     e.printStackTrace();
                 }
             }

@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -85,14 +83,6 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
 
         changePP_ChoosePP_Button.setOnClickListener(this);
         changePP_ChangePP_Button.setOnClickListener(this);
-    }
-
-    public String getStringImage(Bitmap bmp){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
     }
 
     private void uploadImage(){
@@ -169,7 +159,7 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                String image = getStringImage(bitmap);
+                String image = ImageProcess.getInstance().encodeTobase64(bitmap);
                 String username = SessionManager.getInstance(changePP_Context).getDetail().get(SessionManager.KEY_username);
                 String password = SessionManager.getInstance(changePP_Context).getDetail().get(SessionManager.KEY_password);
 
@@ -223,7 +213,7 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
                 bitmap = BitmapFactory.decodeFile(ImageDecode);
                 changePP_ProfilImage_ImageView.setImageBitmap(bitmap);
 
-                bitmap = getResizedBitmap(bitmap, maxSize);
+                bitmap = ImageProcess.getInstance().getResizedBitmap(bitmap, maxSize);
             }
         }
         catch (Exception e)
@@ -232,21 +222,7 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
         }
     }
 
-    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
 
-        float bitmapRatio = (float) width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-
-        return Bitmap.createScaledBitmap(image, width, height, true);
-    }
 
     @Override
     public void onClick(View v) {

@@ -26,6 +26,7 @@ public class CustomTypeface
         typefaceMAP.put("REGISTER","font/Lato-Light.ttf");
         typefaceMAP.put("DASHBOARD","font/Roboto-Regular.ttf");
         typefaceMAP.put("SEARCH","font/Lato-Light.ttf");
+        typefaceMAP.put("SEARCHDASHBOARD","font/Roboto-Regular.ttf");
     }
 
     public static CustomTypeface getInstance()

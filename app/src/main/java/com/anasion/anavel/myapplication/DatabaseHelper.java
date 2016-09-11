@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Vostro on 16/08/2016.
@@ -137,8 +136,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     // SELECT QUERY===========================================================================================
-    public static List<Beanclass> getEntry(String username){
-        List<Beanclass> imageList = new ArrayList<Beanclass>();
+    public static ArrayList<Beanclass> getEntry(String username){
+        ArrayList<Beanclass> imageList = new ArrayList<Beanclass>();
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         String sql = "SELECT image,image_link FROM "+ TABLE_NAME + " WHERE username='"+username+"' ORDER BY indeks ASC;";
         Cursor cursor = database.rawQuery(sql, null);
@@ -158,6 +157,26 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return imageList;
     }
 
+    public static ArrayList<Beanclass> getSearchEntry(String username){
+        ArrayList<Beanclass> imageList = new ArrayList<Beanclass>();
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        String sql = "SELECT image,image_link FROM "+ TABLE_SEARCH + " WHERE username='"+username+"' ORDER BY indeks ASC;";
+        Cursor cursor = database.rawQuery(sql, null);
+        if(cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (cursor.isAfterLast() == false) {
+                    String name = cursor.getString(cursor
+                            .getColumnIndex(COLUMN_IMAGE));
+                    String url = cursor.getString(cursor
+                            .getColumnIndex(COLUMN_IMAGELINK));
+                    imageList.add(new Beanclass(ImageProcess.getInstance().decodeBase64(name),url));
+                    cursor.moveToNext();
+                }
+            }
+        }
+        cursor.close();
+        return imageList;
+    }
 
     private static Integer getMaxIndex()
     {

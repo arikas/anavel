@@ -18,7 +18,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -44,9 +43,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     ExpandableHeightGridView gridview;
 
-    private ArrayList<Beanclass> beans;
     private GridviewAdapter gridviewAdapter;
-    private List<Beanclass> imageCollection = new ArrayList<Beanclass>();
+    private ArrayList<Beanclass> imageCollection = new ArrayList<Beanclass>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,16 +181,12 @@ public class DashboardActivity extends AppCompatActivity {
         dashboard_Cover_Imageview.setImageBitmap(SessionManager.getInstance(dashboard_Context).getImage().get(SessionManager.KEY_coverimage));
 
         gridview = (com.anasion.anavel.myapplication.ExpandableHeightGridView)findViewById(R.id.gridview);
-        beans= new ArrayList<Beanclass>();
+        if(imageCollection.size()>0) {
+            gridviewAdapter = new com.anasion.anavel.myapplication.GridviewAdapter(DashboardActivity.this, imageCollection, "dashboard");
+            gridview.setExpanded(true);
 
-        for (int i= 0; i< imageCollection.size(); i++) {
-
-            beans.add(imageCollection.get(i));
+            gridview.setAdapter(gridviewAdapter);
         }
-        gridviewAdapter = new com.anasion.anavel.myapplication.GridviewAdapter(DashboardActivity.this, beans);
-        gridview.setExpanded(true);
-
-        gridview.setAdapter(gridviewAdapter);
 
     }
 
