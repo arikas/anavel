@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String DB_NAME = "Anavel";
     public static final String TABLE_NAME = "image_data";
     public static final String TABLE_FOLLOW = "follow_data";
+    public static final String TABLE_SEARCH = "search_data";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_USERNAME = "username";
     public static final String COLUMN_IMAGE = "image";
@@ -40,6 +41,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
             COLUMN_USERNAME + " TEXT," +
             COLUMN_FOLLOWING + " TEXT);";
 
+    private static final String CREATE_TABLE_SEARCH = "CREATE TABLE " + TABLE_SEARCH + "("+
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            COLUMN_USERNAME + " TEXT," +
+            COLUMN_INDEX + " INTEGER," +
+            COLUMN_IMAGELINK + " TEXT," +
+            COLUMN_IMAGE + " TEXT);";
+
     public static synchronized DatabaseHelper getInstance(Context context)
     {
         if (databaseHelper == null) {
@@ -57,6 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
         db.execSQL(CREATE_TABLE_FOLLOW);
+        db.execSQL(CREATE_TABLE_SEARCH);
     }
 
     @Override
@@ -64,12 +73,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOLLOW);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEARCH);
         // create new table
         onCreate(db);
     }
 
-    public void addEntry(Bitmap image, String username, String imagelink) throws SQLiteException {
-        SQLiteDatabase database = this.getWritableDatabase();
+    //ADD ENTRY===================================================================================================
+    public static void addEntry(Bitmap image, String username, String imagelink) throws SQLiteException {
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
         ContentValues cv = new  ContentValues();
         cv.put(COLUMN_USERNAME, username);
         cv.put(COLUMN_INDEX, getMaxIndex()+1);
@@ -79,8 +90,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         database.insert( TABLE_NAME, null, cv );
     }
 
-    public void addEntry(Bitmap image, String username, Integer index, String imagelink) throws SQLiteException {
-        SQLiteDatabase database = this.getWritableDatabase();
+    public static void addEntry(Bitmap image, String username, Integer index, String imagelink) throws SQLiteException {
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
         ContentValues cv = new  ContentValues();
         cv.put(COLUMN_USERNAME, username);
         cv.put(COLUMN_INDEX, index);
@@ -90,9 +101,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         database.insert( TABLE_NAME, null, cv );
     }
 
-    public void addFollowEntry(String username, String following)
+    public static void addFollowEntry(String username, String following)
     {
-        SQLiteDatabase database = this.getWritableDatabase();
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
         ContentValues cv = new  ContentValues();
         cv.put(COLUMN_USERNAME, username);
         cv.put(COLUMN_FOLLOWING, following);
@@ -100,59 +111,35 @@ public class DatabaseHelper extends SQLiteOpenHelper
         database.insert( TABLE_FOLLOW, null, cv );
     }
 
-    public void deleteEntry(String imageLink)
+    public static void addSearchEntry(String username, Integer index, String imageLink, Bitmap image) throws SQLiteException {
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        ContentValues cv = new  ContentValues();
+        cv.put(COLUMN_USERNAME, username);
+        cv.put(COLUMN_INDEX, index);
+        cv.put(COLUMN_IMAGELINK, imageLink);
+        cv.put(COLUMN_IMAGE, ImageProcess.getInstance().encodeTobase64(image));
+
+        database.insert( TABLE_SEARCH, null, cv );
+    }
+
+
+    // DELETE ENTRY ==========================================================================================
+    public static void deleteEntry(String imageLink)
     {
-        SQLiteDatabase database = this.getWritableDatabase();
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.delete(TABLE_NAME, " image_link ='" +imageLink+ "'", null);
     }
 
-    public void deleteFollowEntry(String username, String following)
+    public static void deleteFollowEntry(String username, String following)
     {
-        SQLiteDatabase database = this.getWritableDatabase();
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.delete(TABLE_FOLLOW, " username ='" +username+ "' and following ='" +following+ "'", null);
     }
 
-    public int getFollowingCount(String username)
-    {
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor mCount= database.rawQuery("select count(*) from "+ TABLE_FOLLOW + " where username='" +username+ "' ;", null);
-        mCount.moveToFirst();
-        int count= mCount.getInt(0);
-        mCount.close();
-        return  count;
-    }
-
-    public int getFollowerCount(String username)
-    {
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor mCount= database.rawQuery("select count(*) from "+ TABLE_FOLLOW + " where following='" +username+ "' ;", null);
-        mCount.moveToFirst();
-        int count= mCount.getInt(0);
-        mCount.close();
-        return  count;
-    }
-
-    public int getPostCount(String username)
-    {
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor mCount= database.rawQuery("select count(*) from "+ TABLE_NAME + " where username='" +username+ "' ;", null);
-        mCount.moveToFirst();
-        int count= mCount.getInt(0);
-        mCount.close();
-        return  count;
-    }
-
-    public void removeAll()
-    {
-        SQLiteDatabase database = this.getWritableDatabase(); // helper is object extends SQLiteOpenHelper
-        database.delete(DatabaseHelper.TABLE_NAME, null, null);
-        database.delete(DatabaseHelper.TABLE_FOLLOW, null, null);
-        database.close();
-    }
-
-    public List<Beanclass> getEntry(String username){
+    // SELECT QUERY===========================================================================================
+    public static List<Beanclass> getEntry(String username){
         List<Beanclass> imageList = new ArrayList<Beanclass>();
-        SQLiteDatabase database = this.getReadableDatabase();
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
         String sql = "SELECT image,image_link FROM "+ TABLE_NAME + " WHERE username='"+username+"' ORDER BY indeks ASC;";
         Cursor cursor = database.rawQuery(sql, null);
         if(cursor != null) {
@@ -167,14 +154,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 }
             }
         }
+        cursor.close();
         return imageList;
     }
 
 
-    private Integer getMaxIndex()
+    private static Integer getMaxIndex()
     {
         Integer indeks = 0;
-        SQLiteDatabase database = this.getReadableDatabase();
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
         final String MY_QUERY = "SELECT MAX(indeks) AS indeks FROM "+ TABLE_NAME +";";
         Cursor mCursor = database.rawQuery(MY_QUERY, null);
 
@@ -182,7 +170,58 @@ public class DatabaseHelper extends SQLiteOpenHelper
             mCursor.moveToFirst();
             indeks = mCursor.getInt(mCursor.getColumnIndex("indeks"));
         }
+
+        mCursor.close();
         return indeks;
     }
+
+    public static int getFollowingCount(String username)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor mCount= database.rawQuery("select count(*) from "+ TABLE_FOLLOW + " where username='" +username+ "' ;", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+        return  count;
+    }
+
+    public static int getFollowerCount(String username)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor mCount= database.rawQuery("select count(*) from "+ TABLE_FOLLOW + " where following='" +username+ "' ;", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+        return  count;
+    }
+
+    public static int getPostCount(String username)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor mCount= database.rawQuery("select count(*) from "+ TABLE_NAME + " where username='" +username+ "' ;", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+        return  count;
+    }
+
+
+    // REMOVE====================================================================================================
+    public static void removeAll()
+    {
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        database.delete(DatabaseHelper.TABLE_NAME, null, null);
+        database.delete(DatabaseHelper.TABLE_FOLLOW, null, null);
+        database.delete(DatabaseHelper.TABLE_SEARCH, null, null);
+        database.close();
+    }
+
+    public static void removeSearch()
+    {
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        database.delete(DatabaseHelper.TABLE_SEARCH, null, null);
+        database.close();
+    }
+
 
 }

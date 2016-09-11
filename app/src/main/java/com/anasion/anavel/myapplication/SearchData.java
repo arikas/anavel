@@ -25,6 +25,7 @@ public class SearchData {
     public static final String KEY_coverimage = "s_coverimage";
     public static final String KEY_followingCount = "s_followingcount";
     public static final String KEY_followerCount = "s_followercount";
+    public static final String KEY_postCount = "s_postcount";
 
     private SearchData(Context context)
     {
@@ -33,7 +34,7 @@ public class SearchData {
         editor = sharedPreferences.edit();
     }
 
-    public static synchronized SearchData getInstance()
+    public static synchronized SearchData getInstance(Context context)
     {
         if(searchData==null)
         {
@@ -42,7 +43,7 @@ public class SearchData {
         return searchData;
     }
 
-    public static synchronized void createData(String username, String name, String status, String about, int followingCount, int followerCount, Bitmap pp, Bitmap cp)
+    public static synchronized void createData(String username, String name, String status, String about, int followingCount, int followerCount,int post, Bitmap pp, Bitmap cp)
     {
         editor.putString(KEY_username, username);
         editor.putString(KEY_name, name);
@@ -50,6 +51,7 @@ public class SearchData {
         editor.putString(KEY_about, about);
         editor.putInt(KEY_followingCount, followingCount);
         editor.putInt(KEY_followerCount, followerCount);
+        editor.putInt(KEY_postCount, post);
         editor.putString(KEY_profilImage, ImageProcess.getInstance().encodeTobase64(pp));
         editor.putString(KEY_coverimage, ImageProcess.getInstance().encodeTobase64(cp));
 
@@ -65,6 +67,7 @@ public class SearchData {
         stringData.put(KEY_about, sharedPreferences.getString(KEY_about, null));
         stringData.put(KEY_followingCount, String.valueOf(sharedPreferences.getInt(KEY_followingCount, 0)));
         stringData.put(KEY_followerCount, String.valueOf(sharedPreferences.getInt(KEY_followerCount, 0)));
+        stringData.put(KEY_postCount, String.valueOf(sharedPreferences.getInt(KEY_postCount, 0)));
 
         return  stringData;
     }
@@ -78,5 +81,11 @@ public class SearchData {
         return imageData;
     }
 
+
+    public static void clearSearch()
+    {
+        editor.clear();
+        editor.commit();
+    }
 
 }

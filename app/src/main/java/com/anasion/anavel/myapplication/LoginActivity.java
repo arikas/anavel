@@ -36,7 +36,6 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity
 {
     private Context login_Context = null;
-    private StringRequest string_Request = null;
 
     public static final String server_Url = "http://anasion.com/login.php";
     public static final String server_Url2 = "http://anasion.com/getimage.php";
@@ -134,7 +133,7 @@ public class LoginActivity extends AppCompatActivity
     private void  loginInBackground(final String username, final String password)
     {
         loading = ProgressDialog.show(this,"Verifying...","Please wait...",false,false);
-        string_Request = new StringRequest(Request.Method.POST, server_Url, new Response.Listener<String>() {
+        StringRequest string_Request = new StringRequest(Request.Method.POST, server_Url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 try {
@@ -163,6 +162,7 @@ public class LoginActivity extends AppCompatActivity
                 }
                 catch (JSONException e)
                 {
+                    loading.dismiss();
                     e.printStackTrace();
                 }
             }
