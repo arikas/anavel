@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,9 @@ public class ChangeUserDataActivity extends AppCompatActivity {
     protected EditText changeUD_About_Edittext = null;
     protected EditText changeUD_Status_Edittext = null;
     protected Button changeUD_Submit_Button = null;
+    protected LinearLayout changeUD_Upload = null;
+    protected LinearLayout changeUD_Account = null;
+    protected LinearLayout changeUD_Search = null;
 
     private RequestQueue request_Queue = null;
     private StringRequest string_Request = null;
@@ -63,6 +67,9 @@ public class ChangeUserDataActivity extends AppCompatActivity {
         changeUD_About_Edittext = (EditText) findViewById(R.id.changeUDAboutEdittext);
         changeUD_Status_Edittext = (EditText) findViewById(R.id.changeUDStatusEdittext);
         changeUD_Submit_Button = (Button) findViewById(R.id.changeUDSubmitButton);
+        changeUD_Upload = (LinearLayout) findViewById(R.id.changeUDUpload);
+        changeUD_Account = (LinearLayout) findViewById(R.id.changeUDAccount);
+        changeUD_Search = (LinearLayout) findViewById(R.id.changeUDSearch);
 
         changeUD_About_Edittext.setHint(SessionManager.getInstance(changeUD_Context).getDetail().get(SessionManager.KEY_about));
         changeUD_Status_Edittext.setHint(SessionManager.getInstance(changeUD_Context).getDetail().get(SessionManager.KEY_status));
@@ -90,6 +97,30 @@ public class ChangeUserDataActivity extends AppCompatActivity {
                 {
                     changeUDFunction();
                 }
+            }
+        });
+
+        changeUD_Account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        changeUD_Upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), UploadImageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        changeUD_Search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+                startActivity(intent);
             }
         });
     }

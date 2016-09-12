@@ -13,10 +13,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -30,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -49,6 +48,10 @@ public class UploadImageActivity extends AppCompatActivity {
     protected Button upload_Button = null;
     protected Button chose_Button = null;
     protected ImageView upload_ImageView = null;
+    protected LinearLayout uploadImage_Upload = null;
+    protected LinearLayout uploadImage_Account = null;
+    protected LinearLayout uploadImage_Search = null;
+
     private Bitmap bitmap;
     private int PICK_IMAGE_REQUEST = 1;
 
@@ -63,10 +66,40 @@ public class UploadImageActivity extends AppCompatActivity {
         chose_Button = (Button) findViewById(R.id.chooseImageButton);
         upload_Button = (Button) findViewById(R.id.uploadImageButton);
         upload_ImageView = (ImageView) findViewById(R.id.uploadImageImageview);
+        uploadImage_Upload = (LinearLayout) findViewById(R.id.uploadImageUpload);
+        uploadImage_Account = (LinearLayout) findViewById(R.id.uploadImageAccount);
+        uploadImage_Search = (LinearLayout) findViewById(R.id.uploadImageSearch);
+
+        upload_Button.setEnabled(false);
 
         CustomTypeface.getInstance().setCustom(findViewById(R.id.activity_uploadimage), CustomTypeface.getInstance().getTypeface(upload_Context, "DASHBOARD"));
 
         maxSize = 512;
+
+        uploadImage_Account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        uploadImage_Upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), UploadImageActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        uploadImage_Search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
 
         chose_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +146,8 @@ public class UploadImageActivity extends AppCompatActivity {
                 bitmap = BitmapFactory.decodeFile(ImageDecode);
                 upload_ImageView.setImageBitmap(bitmap);
 
-                bitmap = getResizedBitmap(bitmap, maxSize);
+                bitmap = ImageProcess.getInstance().getResizedBitmap(bitmap, maxSize);
+                upload_Button.setEnabled(true);
             }
         }
         catch (Exception e)
@@ -121,23 +155,6 @@ public class UploadImageActivity extends AppCompatActivity {
             Toast.makeText(upload_Context, "Please try again", Toast.LENGTH_LONG).show();
         }
     }
-
-    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        float bitmapRatio = (float) width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-
-        return Bitmap.createScaledBitmap(image, width, height, true);
-    }
-
 
     private void uploadImageFunction()
     {
@@ -168,14 +185,6 @@ public class UploadImageActivity extends AppCompatActivity {
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
-    }
-
-    public String getStringImage(Bitmap bmp){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
     }
 
     private void uploadImage(){
@@ -239,17 +248,14 @@ public class UploadImageActivity extends AppCompatActivity {
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                String image = getStringImage(bitmap);
+                String image = ImageProcess.getInstance().encodeTobase64(bitmap);
                 String username = SessionManager.getInstance(upload_Context).getDetail().get(SessionManager.KEY_username);
 
-                //Creating parameters
                 Map<String,String> params = new Hashtable<String, String>();
 
-                //Adding parameters
                 params.put(KEY_Username, username);
                 params.put(KEY_Image, image);
 
-                //returning parameters
                 return params;
             }
         };

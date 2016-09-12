@@ -45,7 +45,7 @@ public class SessionManager
         return sessionManager;
     }
 
-    public static synchronized void createLoginSession(String username, String password, String status, String about, String name)
+    public static synchronized void createLoginSession(String username, String password, String status, String about, String name,Bitmap profil, Bitmap cover)
     {
         editor.putBoolean(KEY_isLogin, true);
         editor.putString(KEY_username, username);
@@ -53,6 +53,8 @@ public class SessionManager
         editor.putString(KEY_status, status);
         editor.putString(KEY_about, about);
         editor.putString(KEY_name, name);
+        editor.putString(KEY_profilImage, ImageProcess.getInstance().encodeTobase64(profil));
+        editor.putString(KEY_coverimage, ImageProcess.getInstance().encodeTobase64(cover));
         editor.commit();
     }
 

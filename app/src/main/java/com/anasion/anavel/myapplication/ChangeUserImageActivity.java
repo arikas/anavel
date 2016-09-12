@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -49,6 +50,10 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
     protected Button changePP_ChoosePP_Button = null;
     protected Button changePP_ChangePP_Button = null;
     protected ImageView changePP_ProfilImage_ImageView = null;
+    protected LinearLayout changeUI_Upload = null;
+    protected LinearLayout changeUI_Account = null;
+    protected LinearLayout changeUI_Search = null;
+
     private Bitmap bitmap;
     private int PICK_IMAGE_REQUEST = 1;
 
@@ -67,6 +72,11 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
         changePP_ChoosePP_Button = (Button) findViewById(R.id.chooseProfilImageButton);
         changePP_ChangePP_Button = (Button) findViewById(R.id.changeProfilImageButton);
         changePP_ProfilImage_ImageView = (ImageView) findViewById(R.id.changeProfilImageImageview);
+        changeUI_Upload = (LinearLayout) findViewById(R.id.changeUIUpload);
+        changeUI_Account = (LinearLayout) findViewById(R.id.changeUIAccount);
+        changeUI_Search = (LinearLayout) findViewById(R.id.changeUISearch);
+
+        changePP_ChangePP_Button.setEnabled(false);
 
         CustomTypeface.getInstance().setCustom(findViewById(R.id.activity_changeprofilimage), CustomTypeface.getInstance().getTypeface(changePP_Context, "DASHBOARD"));
 
@@ -80,6 +90,30 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
             changePP_ChangePP_Button.setText("CHANGE COVER IMAGE");
             maxSize = 640;
         }
+
+        changeUI_Account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        changeUI_Upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), UploadImageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        changeUI_Search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
 
         changePP_ChoosePP_Button.setOnClickListener(this);
         changePP_ChangePP_Button.setOnClickListener(this);
@@ -214,6 +248,7 @@ public class ChangeUserImageActivity extends AppCompatActivity implements View.O
                 changePP_ProfilImage_ImageView.setImageBitmap(bitmap);
 
                 bitmap = ImageProcess.getInstance().getResizedBitmap(bitmap, maxSize);
+                changePP_ChangePP_Button.setEnabled(true);
             }
         }
         catch (Exception e)

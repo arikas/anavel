@@ -32,9 +32,11 @@ public class ShowImageActivity extends AppCompatActivity {
     protected ImageView show_Image = null;
     protected LinearLayout option_Image = null;
     protected Button delete_Image = null;
-    protected Button like_Image = null;
+    protected LinearLayout showImage_Upload = null;
+    protected LinearLayout showImage_Account = null;
+    protected LinearLayout showImage_Search = null;
+
     private boolean isShow;
-    private boolean isLike;
     private String url;
     private ProgressDialog loading;
 
@@ -49,26 +51,53 @@ public class ShowImageActivity extends AppCompatActivity {
         show_Image = (ImageView) findViewById(R.id.showImageview);
         option_Image = (LinearLayout) findViewById(R.id.optionImageview);
         delete_Image = (Button) findViewById(R.id.showImageDeleteButton);
-        like_Image = (Button) findViewById(R.id.showImageLikeButton);
+        showImage_Upload = (LinearLayout) findViewById(R.id.showImageUpload);
+        showImage_Account = (LinearLayout) findViewById(R.id.showImageAccount);
+        showImage_Search = (LinearLayout) findViewById(R.id.showImageSearch);
 
         Bitmap bitmap = SessionManager.getInstance(showImage_Content).getClickImage();
         url = SessionManager.getInstance(showImage_Content).getClickUrl();
 
+        show_Image.setImageBitmap(bitmap);
 
         option_Image.setVisibility(View.GONE);
         isShow = false;
-        isLike = false;
+
+        showImage_Account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        showImage_Upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), UploadImageActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        showImage_Search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         show_Image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isShow)
-                {
+                if(isShow) {
                     option_Image.setVisibility(View.GONE);
                     isShow = false;
                 }
-                else
-                {
+                else {
                     option_Image.setVisibility(View.VISIBLE);
                     isShow = true;
                 }
@@ -123,21 +152,6 @@ public class ShowImageActivity extends AppCompatActivity {
             }
         });
 
-        like_Image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isLike = !isLike;
-                if(isLike)
-                {
-                    like_Image.setBackgroundResource(R.drawable.likecircle);
-                }
-                else
-                {
-                    like_Image.setBackgroundResource(R.drawable.favcircle);
-                }
-            }
-        });
 
-        show_Image.setImageBitmap(bitmap);
     }
 }

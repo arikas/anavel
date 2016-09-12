@@ -35,22 +35,14 @@
                     android:scaleType="fitXY"
                     android:background="@drawable/buttondeleteimage"
                     android:layout_gravity="center"
-                    android:layout_marginRight="10dp"
                     />
-                <Button
-                    android:id="@+id/showImageLikeButton"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:scaleType="fitXY"
-                    android:background="@drawable/buttonlikeimage"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    />
+
             </LinearLayout>
         </FrameLayout>
 
 
     </FrameLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,75 +54,51 @@
         android:gravity="center">
 
         <LinearLayout
+            android:id="@+id/showImageAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/dashboardHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/bottommenuhome" />
+                android:background="@drawable/useravatar"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/showImageUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/plus"
+                android:layout_gravity="center" />
         </LinearLayout>
 
 
         <LinearLayout
+            android:id="@+id/showImageSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/dashboardAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/bottommenuaccount" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-
-            <ImageView
-                android:id="@+id/dashboardUpload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bottommenupost"
-                android:clickable="true"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-
-            <ImageView
-                android:id="@+id/dashboardFav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bottommenufav" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/dashboardSearch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/abc_ic_search_api_mtrl_alpha" />
+                android:layout_gravity="center"
+                android:background="@drawable/search" />
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 </RelativeLayout>

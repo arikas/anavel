@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,9 @@ public class SearchActivity extends AppCompatActivity {
     protected Button search_Button = null;
     protected Button result_Button = null;
     protected TextView result_Textview = null;
+    protected LinearLayout search_Upload = null;
+    protected LinearLayout search_Account = null;
+    protected LinearLayout search_Search = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,9 @@ public class SearchActivity extends AppCompatActivity {
         search_Button = (Button) findViewById(R.id.searchButton);
         result_Button = (Button) findViewById(R.id.searchResultButton);
         result_Textview = (TextView) findViewById(R.id.searchResultTextView);
+        search_Upload = (LinearLayout) findViewById(R.id.searchUpload);
+        search_Account = (LinearLayout) findViewById(R.id.searchAccount);
+        search_Search = (LinearLayout) findViewById(R.id.searchSearch);
 
         CustomTypeface.getInstance().setCustom(findViewById(R.id.activity_search), CustomTypeface.getInstance().getTypeface(search_Context, "SEARCH"));
 
@@ -95,6 +102,31 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), SearchDashboardActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        search_Account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        search_Upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), UploadImageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        search_Search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 

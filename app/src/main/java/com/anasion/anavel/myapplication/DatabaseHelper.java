@@ -224,6 +224,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return  count;
     }
 
+    public static boolean isFollow(String username, String following)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor mCount= database.rawQuery("select count(*) from "+ TABLE_FOLLOW + " where username='" +username+ "' and following='" +following+ "' ;", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+        if(count>=1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
 
     // REMOVE====================================================================================================
     public static void removeAll()

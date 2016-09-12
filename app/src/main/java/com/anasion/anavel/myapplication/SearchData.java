@@ -81,6 +81,11 @@ public class SearchData {
         return imageData;
     }
 
+    public static synchronized void updateFollower(int followerCount)
+    {
+        editor.putInt(KEY_followerCount, followerCount);
+        editor.commit();
+    }
 
     public static void clearSearch()
     {

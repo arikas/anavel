@@ -44,8 +44,16 @@ public class LoginActivity extends AppCompatActivity
     public static final String KEY_Password = "password";
     public static final String KEY_Request = "request";
 
+    private int logProcess;
     private String username = null;
     private String password = null;
+    private String status = null;
+    private String about = null;
+    private String name = null;
+    private Bitmap profil = null;
+    private Bitmap cover = null;
+    private int ppcpCount;
+    private int imageCount;
 
     protected EditText login_Username_EditText = null;
     protected EditText login_Password_EditText = null;
@@ -53,7 +61,6 @@ public class LoginActivity extends AppCompatActivity
     protected TextView login_Create_Textview = null;
 
     protected ProgressDialog loading = null;
-    private int imageRequestPending;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -68,7 +75,6 @@ public class LoginActivity extends AppCompatActivity
         login_Password_EditText = (EditText) findViewById(R.id.loginPasswordEditText);
         login_Login_Button = (Button) findViewById(R.id.loginLoginButton);
         login_Create_Textview = (TextView) findViewById(R.id.loginCreateTextview);
-        imageRequestPending =0;
 
         CustomTypeface.getInstance().setCustom(findViewById(R.id.activity_login), CustomTypeface.getInstance().getTypeface(login_Context, "LOGIN"));
 
@@ -104,7 +110,7 @@ public class LoginActivity extends AppCompatActivity
     {
         CheckConnection.deleteInstance();
         if(CheckConnection.getInstance(login_Context).isConnect()) {
-            loginInBackground(username, password);
+            loginProcess(username, password);
         }
         else
         {
@@ -130,10 +136,36 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
-    private void  loginInBackground(final String username, final String password)
+    private void loginProcess(final String username, final String password)
     {
-        loading = ProgressDialog.show(this,"Verifying...","Please wait...",false,false);
-        StringRequest string_Request = new StringRequest(Request.Method.POST, server_Url, new Response.Listener<String>() {
+        loading = ProgressDialog.show(this,"Veryfying...","Please wait...",false,false);
+        logProcess=3;
+        CustomRequest.deleteInstance();
+        CustomRequest.getInstance(login_Context).addToRequestQueue(getUserData(username,password));
+        CustomRequest.getInstance(login_Context).addToRequestQueue(getUserImage(username));
+        CustomRequest.getInstance(login_Context).addToRequestQueue(getUserFollow(username));
+    }
+
+    private void loginResponse()
+    {
+        logProcess--;
+        if(logProcess==0)
+        {
+            loading.setMessage("Redirecting...");
+            SessionManager.getInstance(login_Context).createLoginSession(username,password,status,about,name,profil,cover);
+            Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            Toast.makeText(login_Context, "Login Success", Toast.LENGTH_SHORT).show();
+            loading.dismiss();
+        }
+    }
+
+    //GETUSERDATA===========================================================================================================
+    private StringRequest getUserData(final String username, final String password)
+    {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, server_Url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 try {
@@ -143,16 +175,13 @@ public class LoginActivity extends AppCompatActivity
                     if(message.equals("Login Success")) {
                         String pp_Url = jsonObject.getString("pp");
                         String cp_Url = jsonObject.getString("cp");
-                        String status = jsonObject.getString("status");
-                        String about = jsonObject.getString("about");
-                        String name = jsonObject.getString("name");
-
+                        status = jsonObject.getString("status");
+                        about = jsonObject.getString("about");
+                        name = jsonObject.getString("name");
+                        ppcpCount=2;
                         loading.setMessage("Get User Information...");
-                        getImageInBackground(pp_Url, "pp", loading);
-                        getImageInBackground(cp_Url, "cp", loading);
-                        getImageCollection(message, loading);
-
-                        SessionManager.getInstance(login_Context).createLoginSession(username, password, status, about, name);
+                        getUserDataImage(pp_Url, "pp");
+                        getUserDataImage(cp_Url, "cp");
                     }
                     else
                     {
@@ -185,24 +214,25 @@ public class LoginActivity extends AppCompatActivity
             }
         };
 
-        CustomRequest.deleteInstance();
-        CustomRequest.getInstance(login_Context).addToRequestQueue(string_Request);
+        return stringRequest;
     }
 
-    private void getImageInBackground(final String imageLink, final String request, final ProgressDialog loading)
+    private void getUserDataImage(final String link, final String request)
     {
-        ImageRequest imageRequest = new ImageRequest(imageLink, new Response.Listener<Bitmap>() {
+        ImageRequest imageRequest = new ImageRequest(link, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
-                if(request.equals("pp"))
-                {
-                    SessionManager.getInstance(login_Context).saveProfilImage(response);
-
-                    loading.setMessage("Get User Data...");
+                if(request.equals("pp")) {
+                    profil = response;
+                    ppcpCount--;
                 }
-                else
-                {
-                    SessionManager.getInstance(login_Context).saveCoverImage(response);
+                else {
+                    cover=response;
+                    ppcpCount--;
+                }
+
+                if(ppcpCount==0) {
+                    loginResponse();
                 }
 
             }
@@ -214,40 +244,27 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
-        CustomRequest.deleteInstance();
         CustomRequest.getInstance(login_Context).addToRequestQueue(imageRequest);
     }
 
-    private void getImageCollection(final String message, final ProgressDialog loading)
+    //GETUSERIMAGE==========================================================================================================
+    private StringRequest getUserImage(final String username)
     {
-        StringRequest stringRequest1 = new StringRequest(Request.Method.POST, server_Url2, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, server_Url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONArray jsonArray = new JSONArray(response);
-                    imageRequestPending = jsonArray.length();
-                    if (jsonArray.length()>0) {
-                        for (Integer i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String image = jsonObject.getString("image");
-                            //imageRequestPending++;
-                            getImage(image, loading,i);
-                        }
+                    imageCount = jsonArray.length();
+                    for (Integer i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String image = jsonObject.getString("image");
+                        getImageCollection(image ,i);
                     }
-                    else {
-                        loading.dismiss();
-                        Toast.makeText(login_Context, "Server Error", Toast.LENGTH_SHORT).show();
-                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
-
-                    Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                    Toast.makeText(login_Context, message, Toast.LENGTH_SHORT).show();
-                    loading.dismiss();
-
+                    loginResponse();
                 }
             }
         }, new Response.ErrorListener() {
@@ -266,20 +283,18 @@ public class LoginActivity extends AppCompatActivity
                 return params;
             }
         };
-
-        CustomRequest.deleteInstance();
-        CustomRequest.getInstance(login_Context).addToRequestQueue(stringRequest1);
+        return stringRequest;
     }
 
-    private void getImage(final String imageLink, final ProgressDialog loading, final Integer imageIndex)
+    private void getImageCollection(final String link, final Integer index)
     {
-        ImageRequest imageRequest = new ImageRequest(imageLink, new Response.Listener<Bitmap>() {
+        ImageRequest imageRequest = new ImageRequest(link, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
-                DatabaseHelper.getInstance(login_Context).addEntry(response, username, imageIndex, imageLink);
-                imageRequestPending--;
-                if(imageRequestPending==0) {
-                    getFollow(server_Url3, loading);
+                DatabaseHelper.getInstance(login_Context).addEntry(response, username, index, link);
+                imageCount--;
+                if(imageCount==0) {
+                    loginResponse();
                 }
             }
         }, 0, 0, null, new Response.ErrorListener() {
@@ -290,47 +305,27 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
-        CustomRequest.deleteInstance();
         CustomRequest.getInstance(login_Context).addToRequestQueue(imageRequest);
     }
 
-    private void getFollow(final String urlLink, final ProgressDialog loading)
+    //GETUSERFOLLOW=========================================================================================================
+    private StringRequest getUserFollow(final String username)
     {
-        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, urlLink, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, server_Url3, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONArray jsonArray = new JSONArray(response);
-                    if (jsonArray.length()>0) {
-                        for (Integer i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String following = jsonObject.getString("following");
-
-                            DatabaseHelper.getInstance(login_Context).addFollowEntry(username,following);
-                        }
-
-                        loading.setMessage("Redirecting...");
-                        Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                        Toast.makeText(login_Context, "Login Success", Toast.LENGTH_SHORT).show();
-                        loading.dismiss();
+                    for (Integer i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String following = jsonObject.getString("following");
+                        String uname =  jsonObject.getString("username");
+                        DatabaseHelper.getInstance(login_Context).addFollowEntry(uname,following);
                     }
-                    else {
-                        loading.dismiss();
-                        Toast.makeText(login_Context, "Server Error", Toast.LENGTH_SHORT).show();
-                    }
+                    loginResponse();
                 } catch (JSONException e) {
                     e.printStackTrace();
-
-                    Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                    Toast.makeText(login_Context, "Login Success", Toast.LENGTH_SHORT).show();
-                    loading.dismiss();
-
+                    loginResponse();
                 }
             }
         }, new Response.ErrorListener() {
@@ -344,13 +339,12 @@ public class LoginActivity extends AppCompatActivity
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
+                params.put(KEY_Request, "follow");
                 params.put(KEY_Username, username);
-                params.put(KEY_Request, "following");
                 return params;
             }
         };
 
-        CustomRequest.deleteInstance();
-        CustomRequest.getInstance(login_Context).addToRequestQueue(stringRequest2);
+        return stringRequest;
     }
 }
