@@ -22,6 +22,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +42,9 @@ public class LoginActivity extends AppCompatActivity
     public static final String server_Url = "http://anasion.com/login.php";
     public static final String server_Url2 = "http://anasion.com/getimage.php";
     public static final String server_Url3 = "http://anasion.com/follow.php";
+    public static final String server_Url4 = "http://anasion.com/fcm.php";
     public static final String KEY_Username = "username";
+    public static final String KEY_Token = "token";
     public static final String KEY_Password = "password";
     public static final String KEY_Request = "request";
 
@@ -153,12 +157,11 @@ public class LoginActivity extends AppCompatActivity
         {
             loading.setMessage("Redirecting...");
             SessionManager.getInstance(login_Context).createLoginSession(username,password,status,about,name,profil,cover);
-            Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-            Toast.makeText(login_Context, "Login Success", Toast.LENGTH_SHORT).show();
-            loading.dismiss();
+
+            FirebaseMessaging.getInstance().subscribeToTopic("test");
+            FirebaseInstanceId.getInstance().getToken();
+
+            sendFCM(username, TokenData.getInstance(login_Context).getToken());
         }
     }
 
@@ -346,5 +349,38 @@ public class LoginActivity extends AppCompatActivity
         };
 
         return stringRequest;
+    }
+
+    //SEND DATA TOKEN & USERNAME TO FCM TABLE===============================================================================
+    private void sendFCM(final String username, final String token)
+    {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, server_Url4, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                Toast.makeText(login_Context,"Login Success" , Toast.LENGTH_SHORT).show();
+                loading.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+                Toast.makeText(LoginActivity.this, error.toString() , Toast.LENGTH_LONG).show();
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put(KEY_Username, username);
+                params.put(KEY_Token, token);
+                return params;
+            }
+        };
+
+        CustomRequest.getInstance(login_Context).addToRequestQueue(stringRequest);
     }
 }

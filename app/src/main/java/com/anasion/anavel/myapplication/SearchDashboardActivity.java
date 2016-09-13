@@ -31,6 +31,7 @@ public class SearchDashboardActivity extends AppCompatActivity {
 
     private Context searchDashboard_Context = null;
     public static final String url = "http://anasion.com/addfollow.php";
+    public static final String urlNotif = "http://anasion.com/pushnotification.php";
     public static final String KEY_Username = "username";
     public static final String KEY_Following = "following";
     public static final String KEY_Request = "request";
@@ -189,9 +190,15 @@ public class SearchDashboardActivity extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray(response);
                     JSONObject jsonObject = jsonArray.getJSONObject(0);
                     String message = jsonObject.getString("message");
-                    loading.dismiss();
-                    Toast.makeText(searchDashboard_Context, message, Toast.LENGTH_SHORT).show();
-                    setFollow("FOLLOWED");
+                    if(message.equals("Follow Success"))
+                    {
+                        pushNotif(following,username);
+                    }
+                    else
+                    {
+                        loading.dismiss();
+                        Toast.makeText(searchDashboard_Context, "Request Error", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 catch (JSONException e)
                 {
@@ -264,6 +271,38 @@ public class SearchDashboardActivity extends AppCompatActivity {
                 params.put(KEY_Request, "delete");
                 params.put(KEY_Username, username);
                 params.put(KEY_Following, following);
+
+                return params;
+            }
+        };
+
+        CustomRequest.deleteInstance();
+        CustomRequest.getInstance(searchDashboard_Context).addToRequestQueue(stringRequest);
+    }
+
+    private void pushNotif(final String following, final String username)
+    {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlNotif, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                loading.dismiss();
+                Toast.makeText(searchDashboard_Context, "Follow Success", Toast.LENGTH_SHORT).show();
+                setFollow("FOLLOWED");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+                Toast.makeText(searchDashboard_Context, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put(KEY_Username, following);
+                params.put("follower", username);
 
                 return params;
             }
